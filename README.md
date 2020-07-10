@@ -9,7 +9,7 @@ This is an attempt to run a game loop on android, implemented in rust:
 This project is an extension of given repos:
 * https://github.com/katyo/glutin-simple - Katyo's example fork of android example project
 * https://github.com/rust-windowing/winit - Winit master with some changes
-* https://github.com/katyo/glutin/tree/android-support - Katyo's glutin branch 'android-support'
+* https://github.com/katyo/glutin/tree/android-support - Katyo's glutin branch 'android-support', commit 'Fixed compiling for Android'
 
 ## How to compile?
 The project compiles for all 4 android targets:
@@ -22,10 +22,10 @@ Install rust and its android toolchains, explained here:
 https://github.com/rust-windowing/android-rs-glue
 
 __DO NOT:__
-`<cargo install cargo-apk>`
+`cargo install cargo-apk`
 
 __INSTEAD:__
-`<cargo install --git https://github.com/rust-windowing/android-ndk-rs cargo-apk>`
+`cargo install --git https://github.com/rust-windowing/android-ndk-rs cargo-apk`
 
 ## Why is this working?
 The basic issues are https://github.com/rust-windowing/glutin/issues/1307 and https://github.com/rust-windowing/glutin/pull/1313
@@ -43,13 +43,9 @@ let context = ContextBuilder::new()
   .unwrap();
 ```
 
-
 ## What is better than other projects?
-This project compiles, starts without crashing and generates an OpenGL context für up-to-date glutin and winit crates. To be honest, i was not able to find any other running project.
+This project compiles, starts without crashing and generates an OpenGL context für up-to-date glutin and winit crates. To be honest, i was not able to find any other running project. In terms of GameDev, the winit events `resumed` and `suspended` are analog to `OnCreateDevice` and `OnDestroyDevice`. 
+Sure this means that all graphics resources must be destroyed when the app is send to background, and recreated if resumed, but this should be the way to do it (this is the way we were told at university). 
+Many apps try to workaround this to improve user experience (faster resume), but it's more a question of design. There shouldn't be any need to hold complete graphics resources in memory if the app is not drawing while in background.
 
 You can just clone this project and run it. No internal crate dependencies or other stuff that makes someone go crazy.
-
-## What is still not working?
-I noticed that the app is crashing, when sending the app to background and trying to return. But i will try to find the problem as soon as possible. I hope i will find some others to finally get a running rust android project. Everyone is waiting for it.
-
-Have fun
