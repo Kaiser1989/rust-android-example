@@ -27,8 +27,8 @@ __DO NOT:__
 __INSTEAD:__
 `<cargo install --git https://github.com/rust-windowing/android-ndk-rs cargo-apk>`
 
-## Why is this working
-The basic issue is this:
+## Why is this working?
+The basic issues are these:
 https://github.com/rust-windowing/glutin/issues/1307
 and this
 https://github.com/rust-windowing/glutin/pull/1313
@@ -52,7 +52,7 @@ This project compiles, starts without crashing and generates an OpenGL context f
 
 You can just clone this project and run it. No internal crate dependencies or other stuff that makes someone go crazy.
 
-## What is still not working
+## What is still not working?
 I noticed that the app is crashing, when sending the app to background and trying to return. But i will try to find the problem as soon as possible. I hope i will find some others to finally get a running rust android project. Everyone is waiting for it.
 
 Have fun
