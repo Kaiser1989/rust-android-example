@@ -18,7 +18,7 @@ The project compiles for all 4 android targets:
 * i686-linux-android
 * x86_64-linux-android
 
-Install rust and it's android toolchains, explained here:
+Install rust and its android toolchains, explained here:
 https://github.com/rust-windowing/android-rs-glue
 
 __DO NOT:__
@@ -28,12 +28,9 @@ __INSTEAD:__
 `<cargo install --git https://github.com/rust-windowing/android-ndk-rs cargo-apk>`
 
 ## Why is this working?
-The basic issues are these:
-https://github.com/rust-windowing/glutin/issues/1307
-and this
-https://github.com/rust-windowing/glutin/pull/1313
+The basic issues are https://github.com/rust-windowing/glutin/issues/1307 and https://github.com/rust-windowing/glutin/pull/1313
 
-@dvc94ch mentioned that creating windows on android is only available between resume and suspend. @katyo did the first big step by implementing needed methods to glutin. I just did a hack add of winit events to "resume" and "suspend". By now, CreateWindows and Resume both create the "resumed" events. Therefore this app is checking for native window being available before trying to create the context. Not pretty nice, but currently working.
+@dvc94ch mentioned that creating windows with glutin on android is only available between resume and suspend. @katyo did the first big step by implementing needed methods to glutin. I just did a hacky add of winit events to "resume" and "suspend". By now, CreateWindows and Resume both create the "resumed" events. Therefore this app is checking for native window being available before trying to create the context. Not pretty nice, but currently working.
 
 Additionally, there is some bug with sRGB pixel format on android. This means we need to adjust the glutin's ContextBuilder:
 ```
