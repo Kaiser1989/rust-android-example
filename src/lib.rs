@@ -51,16 +51,13 @@ pub fn main() {
                     }
                 },
                 Event::Suspended => {
-                    if let Some(context_and_handle) = context_and_handle.as_ref() {
-                        context_and_handle.context.suspend();
+                    if context_and_handle.is_some() && ndk_glue::native_window().is_some() {
+                        context_and_handle = None;
                     }
                 },
                 Event::Resumed => {
-                    if context_and_handle.is_none() { 
-                        context_and_handle = init_context(el);
-                    }
-                    if let Some(context_and_handle) = context_and_handle.as_ref() {
-                        context_and_handle.context.resume();
+                    if context_and_handle.is_none() && ndk_glue::native_window().is_some() {
+                        context_and_handle = Some(init_context(el));
                     }
                 },
                 _ => (),
@@ -74,23 +71,19 @@ struct ContextAndHandle {
     gl: support::Gl,
 }
 
-fn init_context(el: &EventLoopWindowTarget<()>) -> Option<ContextAndHandle> {
-    if ndk_glue::native_window().is_some() {
-        let wb = WindowBuilder::new().with_title("A fantastic window!");
-        let context = ContextBuilder::new()
-            .with_gl(GlRequest::Specific(Api::OpenGlEs, (2, 0)))
-            .with_gl_debug_flag(false)
-            .with_srgb(false)
-            .with_vsync(true)
-            .build_windowed(wb, &el)
-            .unwrap();
-        let context = unsafe { context.make_current().unwrap() };
+fn init_context(el: &EventLoopWindowTarget<()>) -> ContextAndHandle {
+    let wb = WindowBuilder::new().with_title("A fantastic window!");
+    let context = ContextBuilder::new()
+        .with_gl(GlRequest::Specific(Api::OpenGlEs, (2, 0)))
+        .with_gl_debug_flag(false)
+        .with_srgb(false)
+        .with_vsync(true)
+        .build_windowed(wb, &el)
+        .unwrap();
+    let context = unsafe { context.make_current().unwrap() };
 
-        println!("Pixel format of the window's GL context: {:?}", context.get_pixel_format());
-        let gl = support::load(&context.context());
+    println!("Pixel format of the window's GL context: {:?}", context.get_pixel_format());
+    let gl = support::load(&context.context());
 
-        Some(ContextAndHandle { context, gl })
-    } else {
-        None
-    }
+    ContextAndHandle { context, gl }
 }
