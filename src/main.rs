@@ -1,5 +1,3 @@
-#![cfg(target_os = "android")]
-
 //////////////////////////////////////////////////
 // Using
 
@@ -7,9 +5,8 @@ pub mod runner;
 
 
 //////////////////////////////////////////////////
-// Entry point for android
+// Entry point for windows
 
-#[ndk_glue::main(backtrace)]
 fn main() {
     runner::start();
 }
