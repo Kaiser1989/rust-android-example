@@ -1,8 +1,15 @@
 //////////////////////////////////////////////////
 // Using
 
-use game_gl::{ GameLoop, Runner, gl, Gl, InputEvent};
-
+use game_gl::{ 
+    GameLoop, 
+    Runner, 
+    gl, 
+    Gl, 
+    input::{ 
+        InputEvent
+    },
+};
 
 //////////////////////////////////////////////////
 // Entry
@@ -52,8 +59,12 @@ impl Runner for ExampleRunner {
         }
     }
 
-    fn create_device(&mut self, _gl: &Gl) {
+    fn create_device(&mut self, gl: &Gl) {
         println!("create_device");
+        use game_gl::utils::resources::GlFactory as fac;
+
+        fac::create_vertex_buffer(gl);
+
     }
 
     fn destroy_device(&mut self, _gl: &Gl) {
