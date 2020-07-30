@@ -11,8 +11,15 @@ use game_gl::resource::*;
 // Entry
 
 pub fn start() {
+    // init logging
+    #[cfg(debug_assertions)]
+    simple_logger::init_with_level(log::Level::Debug).unwrap();
+    #[cfg(not(debug_assertions))]
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
+    // init game loop and run
     let mut game_loop = GameLoop::new(ExampleRunner{  ..Default::default() });
-    game_loop.run();
+    game_loop.run();    
 }
 
 
@@ -111,7 +118,7 @@ impl Runner for ExampleRunner {
     }
 
     fn create_device(&mut self, gl: &Gl) {
-        println!("create_device");
+        log::debug!("create_device");
 
         // create resources
         self.vao = GlVertexArrayObject::new(gl);
@@ -142,7 +149,7 @@ impl Runner for ExampleRunner {
     }
 
     fn destroy_device(&mut self, _gl: &Gl) {
-        println!("destroy_device");
+        log::debug!("destroy_device");
 
         self.vao.release();
         self.vbo.release();
@@ -153,7 +160,7 @@ impl Runner for ExampleRunner {
     }
 
     fn resize_device(&mut self, _gl: &Gl, width: u32, height: u32) {
-        println!("resize_device ({} x {})", width, height);
+        log::debug!("resize_device ({} x {})", width, height);
         self.resolution = (width as GLsizei, height as GLsizei);
     }
 }
