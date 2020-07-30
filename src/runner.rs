@@ -3,26 +3,9 @@
 
 use std::mem::size_of;
 
-use game_gl::{ 
-    GameLoop, 
-    Runner, 
-    gl,
-    gl::types::*,
-    utils::resources::{
-        Gl,
-        GlResource,
-        GlVertexArrayObject,
-        GlVertexBuffer,
-        GlIndexBuffer,
-        GlUniformBuffer,
-        GlTexture,
-        GlShader,
-        image,
-    },
-    input::{ 
-        InputEvent
-    },
-};
+use game_gl::prelude::*;
+use game_gl::resource::*;
+
 
 //////////////////////////////////////////////////
 // Entry
