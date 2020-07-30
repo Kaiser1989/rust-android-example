@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["lib", "cdylib"]
 
 [dependencies]
-game-gl = { path = "../game-gl"} #{ git = "https://github.com/Kaiser1989/game-gl", branch = "graphics" }
+game-gl = { git = "https://github.com/Kaiser1989/game-gl", branch = "graphics" }
 log = "0.4.11"
 simple_logger = "1.6.0"
 

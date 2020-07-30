@@ -105,7 +105,7 @@ impl Runner for ExampleRunner {
             // gl.DepthMask(gl::TRUE);
             // gl.DepthFunc(gl::LESS);
 
-            self.shader.draw_elements(gl::TRIANGLE_STRIP, 4);
+            self.shader.draw_elements(gl::TRIANGLE_STRIP, self.ibo.count());
 
             self.shader.unbind();
 
@@ -123,18 +123,21 @@ impl Runner for ExampleRunner {
         // create resources
         self.vao = GlVertexArrayObject::new(gl);
 
-        self.vbo = GlVertexBuffer::new(gl, gl::STATIC_DRAW, &[
+        self.vbo = GlVertexBuffer::new(gl, gl::STATIC_DRAW, &[[0.0; 4]; 4]);
+        self.vbo.update(&[
             [-0.5, -0.5, 0.0, 0.0], 
             [-0.5,  0.5, 0.0, 1.0], 
             [ 0.5, -0.5, 1.0, 0.0],
             [ 0.5,  0.5, 1.0, 1.0],
         ]);
 
-        self.ibo = GlIndexBuffer::new(gl, gl::STATIC_DRAW, &[
+        self.ibo = GlIndexBuffer::new(gl, gl::STATIC_DRAW, &[0; 4]);
+        self.ibo.update(&[
             0, 1, 2, 3
         ]);
 
-        self.ubo = GlUniformBuffer::new(gl, gl::DYNAMIC_DRAW, &(0.5, 0.5, 0.5, 1.0));
+        self.ubo = GlUniformBuffer::new(gl, gl::DYNAMIC_DRAW, &(0.0, 0.0, 0.0, 0.0));
+        self.ubo.update(&(0.5, 0.5, 0.5, 1.0));
 
         let image: image::RgbaImage = image::RgbaImage::from_vec(1, 1, vec![0, 255, 0, 255]).unwrap();
         self.texture = GlTexture::new(gl, &[image]);
