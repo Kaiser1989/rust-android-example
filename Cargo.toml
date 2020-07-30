@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["lib", "cdylib"]
 
 [dependencies]
-game-gl = { path = "../game-gl"} #{ git = "https://github.com/Kaiser1989/game-gl" }
+game-gl = { git = "https://github.com/Kaiser1989/game-gl", branch = "graphics" }
 
 [target.'cfg(target_os = "android")'.dependencies]
 ndk-glue = { git = "https://github.com/Kaiser1989/android-ndk-rs" }
