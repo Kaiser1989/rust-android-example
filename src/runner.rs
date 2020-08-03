@@ -38,7 +38,7 @@ void main() {
     v_TexCoord = vec3(a_TexCoord, 0.0);
     gl_Position = vec4(a_Pos, 0.0, 1.0);
 }
-\0";
+";
 
 const FS: &'static [u8] = b"#version 300 es
 precision mediump float;
@@ -57,7 +57,7 @@ layout(location = 0) out vec4 target0;
 void main() {
     target0 = texture(t_Sampler, v_TexCoord) * u_Color;
 }
-\0";
+";
 
 //////////////////////////////////////////////////
 // Runner
@@ -80,7 +80,23 @@ impl Runner for ExampleRunner {
     fn pause(&mut self) { }
     fn resume(&mut self) { }
     fn update(&mut self, _elapsed_time: f32) { }
-    fn input(&mut self, _input_events: &[InputEvent]) { }
+
+    fn input(&mut self, input_events: &[InputEvent]) {
+        input_events.iter().for_each(|input_event| {
+            match input_event {
+                InputEvent::Cursor(event) => {
+                    println!("{:?}", event);
+                },
+                InputEvent::Mouse(event) => {
+                    println!("{:?}", event);
+                },
+                InputEvent::Touch(event) => {
+                    println!("{:?}", event);
+                },
+                _ => {}
+            }
+        });
+    }
 
     fn render(&mut self, gl: &Gl) {
         unsafe { 
@@ -125,10 +141,10 @@ impl Runner for ExampleRunner {
 
         self.vbo = GlVertexBuffer::new(gl, gl::STATIC_DRAW, &[[0.0; 4]; 4]);
         self.vbo.update(&[
-            [-0.5, -0.5, 0.0, 0.0], 
-            [-0.5,  0.5, 0.0, 1.0], 
-            [ 0.5, -0.5, 1.0, 0.0],
-            [ 0.5,  0.5, 1.0, 1.0],
+            [-0.5, -0.5, 0.0, 1.0],
+            [-0.5,  0.5, 0.0, 0.0],  
+            [ 0.5, -0.5, 1.0, 1.0],
+            [ 0.5,  0.5, 1.0, 0.0],
         ]);
 
         self.ibo = GlIndexBuffer::new(gl, gl::STATIC_DRAW, &[0; 4]);
@@ -137,9 +153,9 @@ impl Runner for ExampleRunner {
         ]);
 
         self.ubo = GlUniformBuffer::new(gl, gl::DYNAMIC_DRAW, &(0.0, 0.0, 0.0, 0.0));
-        self.ubo.update(&(0.5, 0.5, 0.5, 1.0));
+        self.ubo.update(&(0.5, 0.9, 0.9, 1.0));
 
-        let image: image::RgbaImage = image::RgbaImage::from_vec(1, 1, vec![0, 255, 0, 255]).unwrap();
+        let image = image::load_from_memory(&load_file("lena.png").unwrap()).unwrap().to_rgba();
         self.texture = GlTexture::new(gl, &[image]);
 
         self.shader = GlShader::new(gl, VS, FS);
@@ -166,4 +182,16 @@ impl Runner for ExampleRunner {
         log::debug!("resize_device ({} x {})", width, height);
         self.resolution = (width as GLsizei, height as GLsizei);
     }
+}
+
+#[cfg(target_os = "android")]
+pub fn load_file(filename: &str) -> Option<Vec<u8>> {
+    let asset_manager = ndk_glue::native_activity().asset_manager();
+    let asset = asset_manager.open(&std::ffi::CString::new(filename).unwrap());
+    asset.map(|mut asset| asset.get_buffer().ok().map(|buffer| buffer.to_vec())).flatten()
+}
+
+#[cfg(not(target_os = "android"))]
+pub fn load_file(filename: &str) -> Option<Vec<u8>> {
+    std::fs::read(format!("assets/{}", filename)).ok()
 }

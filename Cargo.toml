@@ -17,3 +17,6 @@ ndk-glue = { git = "https://github.com/Kaiser1989/android-ndk-rs" }
 
 [package.metadata.android]
 build_targets = [ "armv7-linux-androideabi", "aarch64-linux-android", "i686-linux-android", "x86_64-linux-android" ]
+opengles_version_major = 3
+opengles_version_minor = 0
+assets = "assets"
