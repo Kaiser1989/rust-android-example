@@ -4,7 +4,8 @@
 use std::mem::size_of;
 
 use game_gl::prelude::*;
-use game_gl::resource::*;
+use game_gl::opengl::*;
+use game_gl::file::File;
 
 
 //////////////////////////////////////////////////
@@ -155,7 +156,7 @@ impl Runner for ExampleRunner {
         self.ubo = GlUniformBuffer::new(gl, gl::DYNAMIC_DRAW, &(0.0, 0.0, 0.0, 0.0));
         self.ubo.update(&(0.5, 0.9, 0.9, 1.0));
 
-        let image = image::load_from_memory(&load_file("lena.png").unwrap()).unwrap().to_rgba();
+        let image = image::load_from_memory(&File::load_bytes("lena.png").unwrap()).unwrap().to_rgba();
         self.texture = GlTexture::new(gl, &[image]);
 
         self.shader = GlShader::new(gl, VS, FS);
@@ -182,16 +183,4 @@ impl Runner for ExampleRunner {
         log::debug!("resize_device ({} x {})", width, height);
         self.resolution = (width as GLsizei, height as GLsizei);
     }
-}
-
-#[cfg(target_os = "android")]
-pub fn load_file(filename: &str) -> Option<Vec<u8>> {
-    let asset_manager = ndk_glue::native_activity().asset_manager();
-    let asset = asset_manager.open(&std::ffi::CString::new(filename).unwrap());
-    asset.map(|mut asset| asset.get_buffer().ok().map(|buffer| buffer.to_vec())).flatten()
-}
-
-#[cfg(not(target_os = "android"))]
-pub fn load_file(filename: &str) -> Option<Vec<u8>> {
-    std::fs::read(format!("assets/{}", filename)).ok()
 }
