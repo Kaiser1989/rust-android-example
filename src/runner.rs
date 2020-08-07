@@ -6,6 +6,7 @@ use std::mem::size_of;
 use game_gl::prelude::*;
 use game_gl::opengl::*;
 use game_gl::file::File;
+use game_gl::input::*;
 
 
 //////////////////////////////////////////////////
@@ -95,7 +96,17 @@ impl Runner for ExampleRunner {
                 InputEvent::Touch(_event) => {
                     //println!("{:?}", event);
                 },
-                _ => {}
+                InputEvent::Keyboard(KeyboardEvent{ state, key }) => {
+                    match (state, key) {
+                        (KeyState::Released, Key::Back) => {
+                            #[cfg(target_os = "android")]
+                            ndk_glue::native_activity().finish();
+                            #[cfg(not(target_os = "android"))]
+                            std::process::exit(0);
+                        },
+                        _ => {}
+                    }
+                }
             }
         });
     }
