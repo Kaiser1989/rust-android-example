@@ -14,9 +14,12 @@ use game_gl::file::File;
 pub fn start() {
     // init logging
     #[cfg(debug_assertions)]
-    simple_logger::init_with_level(log::Level::Debug).unwrap();
+    let log_level = log::Level::Debug;
     #[cfg(not(debug_assertions))]
-    simple_logger::init_with_level(log::Level::Info).unwrap();
+    let log_level = log::Level::Info;
+    match simple_logger::init_with_level(log_level) { 
+        Err(s) => println!("{}", s), _ => {}
+    }
 
     // init game loop and run
     let mut game_loop = GameLoop::new(ExampleRunner{  ..Default::default() });
@@ -78,21 +81,19 @@ impl Runner for ExampleRunner {
 
     fn init(&mut self) { }
     fn cleanup(&mut self) { }
-    fn pause(&mut self) { }
-    fn resume(&mut self) { }
     fn update(&mut self, _elapsed_time: f32) { }
 
     fn input(&mut self, input_events: &[InputEvent]) {
         input_events.iter().for_each(|input_event| {
             match input_event {
-                InputEvent::Cursor(event) => {
-                    println!("{:?}", event);
+                InputEvent::Cursor(_event) => {
+                    //println!("{:?}", event);
                 },
-                InputEvent::Mouse(event) => {
-                    println!("{:?}", event);
+                InputEvent::Mouse(_event) => {
+                    //println!("{:?}", event);
                 },
-                InputEvent::Touch(event) => {
-                    println!("{:?}", event);
+                InputEvent::Touch(_event) => {
+                    //println!("{:?}", event);
                 },
                 _ => {}
             }
