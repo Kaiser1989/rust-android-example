@@ -3,6 +3,8 @@
 
 use std::mem::size_of;
 
+use simple_logger::SimpleLogger;
+
 use game_gl::file::File;
 use game_gl::input::*;
 use game_gl::opengl::*;
@@ -13,14 +15,18 @@ use game_gl::prelude::*;
 
 pub fn start() {
     // init logging
-    // #[cfg(debug_assertions)]
-    // let log_level = log::Level::Debug;
-    // #[cfg(not(debug_assertions))]
-    // let log_level = log::Level::Info;
-    // match simple_logger::init_with_level(log_level) {
-    //     Err(s) => println!("{}", s),
-    //     _ => {}
-    // }
+    #[cfg(debug_assertions)]
+    let log_level = log::LevelFilter::Debug;
+    #[cfg(not(debug_assertions))]
+    let log_level = log::LevelFilter::Info;
+    match SimpleLogger::new()
+        .with_utc_timestamps()
+        .with_level(log_level)
+        .init()
+    {
+        Err(s) => println!("{}", s),
+        _ => {}
+    }
 
     // init game loop and run
     let mut game_loop = GameLoop::new(ExampleRunner {
@@ -85,16 +91,17 @@ impl Runner for ExampleRunner {
     fn update(&mut self, _elapsed_time: f32) {}
 
     fn input(&mut self, input_events: &[InputEvent]) {
-        input_events.iter().for_each(|input_event| {
-            match input_event {
-                InputEvent::Cursor(_event) => {
-                    //println!("{:?}", event);
+        input_events
+            .iter()
+            .for_each(|input_event| match input_event {
+                InputEvent::Cursor(event) => {
+                    println!("{:?}", event);
                 }
-                InputEvent::Mouse(_event) => {
-                    //println!("{:?}", event);
+                InputEvent::Mouse(event) => {
+                    println!("{:?}", event);
                 }
-                InputEvent::Touch(_event) => {
-                    //println!("{:?}", event);
+                InputEvent::Touch(event) => {
+                    println!("{:?}", event);
                 }
                 InputEvent::Keyboard(KeyboardEvent { state, key }) => match (state, key) {
                     (KeyState::Released, Key::Back) => {
@@ -108,8 +115,7 @@ impl Runner for ExampleRunner {
                     }
                     _ => {}
                 },
-            }
-        });
+            });
     }
 
     fn render(&mut self, gl: &Gl) {
